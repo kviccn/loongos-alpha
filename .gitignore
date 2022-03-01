@@ -1,4 +1,5 @@
 dist
 *.o
 
+kernel/vectors.S
 scripts/build-vectors

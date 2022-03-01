@@ -5,7 +5,6 @@
 #include <x86.h>
 
 void kernel_main(void) {
-  cli();
   seginit();
 
   cls();

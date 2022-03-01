@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-Wall -c -g -m32 -ffreestanding -Iinclude
 ASFLAGS=-Wall -g -m32
-LDFLAGS=-T scripts/kernel.ld
+LDFLAGS=-T scripts/kernel.ld -Map dist/kernel.map
 
 DIST_DIR=dist
 ISO_TARGET=$(DIST_DIR)/loongos-alpha.iso
@@ -20,7 +20,7 @@ all: $(objects)
 $(TARGET): $(ENTRY) $(objects)
 	-mkdir $(DIST_DIR)
 	ld $(LDFLAGS) $^ -o $@
-	objdump -S -Msuffix $@ > $(patsubst %.elf, %.asm, $@)
+	objdump -SD -Msuffix $@ > $(patsubst %.elf, %.asm, $@)
 
 BUILD_VECTORS_TOOL=scripts/build-vectors
 VECTORS_ASM=kernel/vectors.S
@@ -38,6 +38,9 @@ $(ISO_TARGET): $(TARGET)
 
 simulate: $(TARGET)
 	DISPLAY=:0 qemu-system-x86_64 -m 128M -kernel $< -monitor stdio
+
+debug: $(TARGET)
+	DISPLAY=:0 qemu-system-x86_64 -m 128M -kernel $< -monitor stdio -S -s
 
 boot-iso: $(ISO_TARGET)
 	DISPLAY=:0 qemu-system-x86_64 -m 128M -boot d -cdrom $< -monitor stdio
