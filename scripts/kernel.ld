@@ -6,6 +6,8 @@ SECTIONS
 {
   . = 0x100000;
 
+  PROVIDE(kernel_start = .);
+
   .init.text : {
     *(.init.text)
   }
@@ -20,10 +22,18 @@ SECTIONS
     *(.text)
   }
 
+  PROVIDE(etext = .);
+
+  . = ALIGN(0x1000);
+
+  PROVIDE(data = .);
+
   .data : {
     *(.data)
     *(.rodata)
   }
+
+  PROVIDE(edata = .);
 
   .bss : {
     *(.bss)
@@ -36,6 +46,9 @@ SECTIONS
   .stabstr : {
     *(.stabstr)
   }
+
+	PROVIDE(end = . - 0xC0000000);
+	PROVIDE(kernel_end = . - 0xC0000000);
 
   /DISCARD/ : {
     *(.comment)

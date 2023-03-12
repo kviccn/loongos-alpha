@@ -1,5 +1,8 @@
 #include <mmu.h>
+#include <multiboot.h>
 #include <types.h>
+
+__attribute__((__section__(".init.data"))) multiboot_info_t *global_mbi;
 
 extern void kernel_main(void);
 
@@ -16,7 +19,10 @@ pde_t pte_low[NPTENTRIES];
 __attribute__((__section__(".init.data"), __aligned__(PGSIZE)))
 pde_t pte_high[NPTENTRIES];
 
-__attribute__((__section__(".init.text"))) void kernel_init(void) {
+__attribute__((__section__(".init.text"))) void kernel_init(
+    multiboot_info_t *mbi) {
+  global_mbi = mbi;
+
   entrypgdir[0] = (uint32_t)pte_low | PTE_P | PTE_W;
   entrypgdir[KERNBASE >> PDXSHIFT] = (uint32_t)pte_high | PTE_P | PTE_W;
 

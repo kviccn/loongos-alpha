@@ -50,8 +50,6 @@ void cprintf(const char *fmt, ...) {
         break;
       case 'x':
       case 'p':
-        consputc('0');
-        consputc('x');
         printint(*argp++, 16, 0);
         break;
       case 's':
